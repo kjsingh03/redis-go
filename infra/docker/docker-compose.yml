@@ -1,0 +1,164 @@
+name: veedra-infra
+
+services:
+
+  commerce-api:
+    build:
+      context: ../..
+      dockerfile: services/commerce-api/Dockerfile
+    container_name: veedra_commerce_api
+    restart: unless-stopped
+    env_file:
+    - ../../services/commerce-api/.env.docker
+    environment:
+      NODE_ENV: production
+    ports:
+      - "${COMMERCE_API_PORT:-4000}:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - veedra_net
+      
+  # email-worker:
+  #   build:
+  #     context: ../..
+  #     dockerfile: workers/email-worker/Dockerfile
+  #   restart: unless-stopped
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   env_file:
+  #     - ../../workers/email-worker/.env
+  #   networks:
+  #     - veedra_net
+
+  # # PostgreSQL
+  # postgres:
+  #   image: postgres:16-alpine
+  #   container_name: veedra_postgres
+  #   restart: unless-stopped
+  #   environment:
+  #     POSTGRES_USER: ${POSTGRES_USER:-veedra}
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secret}
+  #     POSTGRES_DB: ${POSTGRES_DB:-veedra_dev}
+  #   ports:
+  #     - "${POSTGRES_PORT:-5432}:5432"
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #     - ./postgres/init:/docker-entrypoint-initdb.d:ro
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-veedra} -d ${POSTGRES_DB:-veedra_dev}"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+  #     start_period: 10s
+  #   networks:
+  #     - veedra_net
+
+  # # Redis
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: veedra_redis
+  #   restart: unless-stopped
+  #   command: >
+  #     redis-server
+  #     --requirepass ${REDIS_PASSWORD:-secret}
+  #     --maxmemory 256mb
+  #     --maxmemory-policy allkeys-lru
+  #     --appendonly yes
+  #   ports:
+  #     - "${REDIS_PORT:-6379}:6379"
+  #   volumes:
+  #     - redis_data:/data
+  #   healthcheck:
+  #     test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-secret}", "ping"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+  #     start_period: 5s
+  #   networks:
+  #     - veedra_net
+
+  # # RabbitMQ
+  # rabbitmq:
+  #   image: rabbitmq:3.13-management-alpine
+  #   container_name: veedra_rabbitmq
+  #   restart: unless-stopped
+  #   environment:
+  #     RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-veedra}
+  #     RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-secret}
+  #     RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-/}
+  #   ports:
+  #     - "${RABBITMQ_PORT:-5672}:5672"
+  #     - "${RABBITMQ_MGMT_PORT:-15672}:15672"  # → http://localhost:15672
+  #   volumes:
+  #     - rabbitmq_data:/var/lib/rabbitmq
+  #   healthcheck:
+  #     test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+  #     interval: 15s
+  #     timeout: 10s
+  #     retries: 5
+  #     start_period: 20s
+  #   networks:
+  #     - veedra_net
+
+  # # pgAdmin  (--profile tools)
+  # pgadmin:
+  #   image: dpage/pgadmin4:latest
+  #   container_name: veedra_pgadmin
+  #   restart: unless-stopped
+  #   profiles: [tools]
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@veedra.dev}
+  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-secret}
+  #     PGADMIN_CONFIG_SERVER_MODE: "False"
+  #     PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+  #   ports:
+  #     - "${PGADMIN_PORT:-5050}:80"
+  #   volumes:
+  #     - pgadmin_data:/var/lib/pgadmin
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   networks:
+  #     - veedra_net
+
+  # # RedisInsight  (--profile tools)
+  # redisinsight:
+  #   image: redis/redisinsight:latest
+  #   container_name: veedra_redisinsight
+  #   restart: unless-stopped
+  #   profiles: [tools]
+  #   ports:
+  #     - "${REDISINSIGHT_PORT:-5540}:5540"
+  #   volumes:
+  #     - redisinsight_data:/data
+  #   depends_on:
+  #     redis:
+  #       condition: service_healthy
+  #   networks:
+  #     - veedra_net
+
+# Volumes
+# volumes:
+  # postgres_data:
+  #   name: veedra_postgres_data
+  # redis_data:
+  #   name: veedra_redis_data
+  # rabbitmq_data:
+  #   name: veedra_rabbitmq_data
+  # pgadmin_data:
+  #   name: veedra_pgadmin_data
+  # redisinsight_data:
+  #   name: veedra_redisinsight_data
+
+# Network
+networks:
+  veedra_net:
+    name: veedra_net
+    driver: bridge

@@ -1,0 +1,159 @@
+# UTILITY FILES
+
+context.md
+
+# SECRETS & ENVIRONMENT
+.env
+.env.*
+!.env.example
+!.env.template
+*.pem
+*.key
+*.cert
+*.p12
+secrets/
+node_modules/
+
+
+# IDE & EDITORS
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+.idea/
+*.iml
+*.iws
+*.ipr
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+.fleet/
+
+
+# APPS (Next.js / React / frontend)
+apps/*/node_modules/
+apps/*/dist/
+apps/*/build/
+apps/*/.next/
+apps/*/.nuxt/
+apps/*/.output/
+apps/*/.svelte-kit/
+apps/*/out/
+apps/*/coverage/
+apps/*/.nyc_output/
+apps/*/*.tsbuildinfo
+apps/*/.cache/
+apps/*/storybook-static/
+apps/*/playwright-report/
+apps/*/test-results/
+ 
+ 
+# PACKAGES (shared-types / shared-utils / ui / config)
+packages/*/node_modules/
+packages/*/.turbo/
+packages/*/dist/
+packages/*/build/
+packages/*/*.tsbuildinfo
+packages/*/coverage/
+ 
+ 
+# SERVICES — NODE / TYPESCRIPT
+# services/commerce-api/
+services/*/node_modules/
+services/*/dist/
+services/*/build/
+services/*/coverage/
+services/*/.nyc_output/
+services/*/*.tsbuildinfo
+services/*/.cache/
+services/*/test-results/
+ 
+# SERVICES — PYTHON (FastAPI / Django / Flask)
+services/*/venv/
+services/*/.venv/
+services/*/env/
+services/*/myvenv/
+services/**/__pycache__/
+services/**/**/__pycache__/
+services/**/*.py[cod]
+services/**/*.pyo
+services/**/*.pyd
+services/*/.pytest_cache/
+services/*/.mypy_cache/
+services/*/.ruff_cache/
+services/*/.hypothesis/
+services/*/*.egg-info/
+services/*/.eggs/
+ 
+# SERVICES — GO
+services/*/bin/
+services/*/tmp/
+services/**/*.exe
+services/**/*.test
+services/**/*.out
+services/*/vendor/
+
+ 
+# WORKERS
+# workers/email-worker/
+workers/*/node_modules/
+workers/*/dist/
+workers/*/build/
+workers/*/*.tsbuildinfo
+workers/*/coverage/
+ 
+# Python workers
+workers/*/venv/
+workers/*/.venv/
+workers/**/__pycache__/
+workers/**/**/__pycache__/
+workers/**/*.py[cod]
+ 
+# Go workers
+workers/*/bin/
+workers/*/tmp/
+ 
+ 
+# DOCKER
+docker-compose.override.yml
+.docker/
+ 
+ 
+# INFRASTRUCTURE (infra/)
+# Terraform
+infra/**/.terraform/
+infra/**/*.tfstate
+infra/**/*.tfstate.*
+infra/**/*.tfvars
+!infra/**/*.tfvars.example
+infra/**/.terraform.lock.hcl
+ 
+# Pulumi
+infra/**/.pulumi/
+ 
+# Serverless
+infra/**/.serverless/
+ 
+# CDK
+infra/**/cdk.out/
+ 
+ 
+# DATABASE & CACHE
+*.sqlite
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal
+dump.rdb
+*.rdb
+ 
+ 
+# TESTING (root-level runs)
+test-results/
+playwright-report/
+coverage/
+.nyc_output/
+
+.turbo/
